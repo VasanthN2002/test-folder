@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="contract_extension" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="f0f97321-ffb7-46b2-b476-82bba12668cd">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="59"/>
+	<parameter name="p_emp_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Company_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<parameter name="Region_id" class="java.lang.String">
+		<defaultValueExpression><![CDATA[]]></defaultValueExpression>
+	</parameter>
+	<queryString>
+		<![CDATA[select
+( SELECT company_logo_path FROM "XXFS_PM_GROUP_COMPANIES_T" WHERE company_id = $P{Company_id} ) as logo,
+to_char(sysdate,'ddth Mon yyyy') as display_date,
+emp.EMPLOYEE_ID,
+emp.EMPLOYEE_NAME AS Employee_name,
+
+(SELECT 'This is with regards to the contract agreement dated '||to_char(CONT_START_DATE,'ddth Mon yyyy')||'.We are pleased to inform you,the contract has been further extended till '||to_char(CONT_END_DATE,'Month ddth, yyyy')||'.' from XXFS_PM_EMPLOYEES_T where employee_id = emp.employee_id ) as SUB,
+
+trim('Dear '||SUBSTR(EMPLOYEE_NAME, 1, instr(EMPLOYEE_NAME ,' ') -1)) as emp_name,
+DATE_OF_JOINING,
+
+(SELECT HR_SIGN_PATH
+   FROM XXFS_PM_GROUP_COMPANIES_T
+   WHERE company_id = $P{Company_id} ) AS HR_SIGNATURE,
+
+  ( select COMPANY_NAME from XXFS_PM_GROUP_COMPANIES_T where company_id =$P{Company_id}) as Company_name,
+
+  (SELECT EMPLOYEE_NAME
+   FROM xxfs_pm_employees_t
+   WHERE employee_id = (SELECT REGION_HEAD_ID
+                       FROM XXFS_PM_REGIONS_T
+                       WHERE region_id =$P{Region_id} )) AS REGION_HEAD
+
+from XXPRODUCT.XXFS_PM_EMPLOYEES_T  emp
+where emp.employee_id =$P{p_emp_id}]]>
+	</queryString>
+	<field name="LOGO" class="java.lang.String"/>
+	<field name="DISPLAY_DATE" class="java.lang.String"/>
+	<field name="EMPLOYEE_ID" class="java.math.BigDecimal"/>
+	<field name="EMPLOYEE_NAME" class="java.lang.String"/>
+	<field name="SUB" class="java.lang.String"/>
+	<field name="EMP_NAME" class="java.lang.String"/>
+	<field name="DATE_OF_JOINING" class="java.sql.Timestamp"/>
+	<field name="HR_SIGNATURE" class="java.lang.String"/>
+	<field name="COMPANY_NAME" class="java.lang.String"/>
+	<field name="REGION_HEAD" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="72" splitType="Stretch">
+			<image isUsingCache="false">
+				<reportElement x="0" y="-3" width="99" height="75" uuid="3d6244b6-75b6-48cd-bfc1-1c86e54b8610"/>
+			</image>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="454" splitType="Stretch">
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="52" y="7" width="100" height="20" uuid="46a72bee-f131-438c-9472-4267eb15d1c9"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{DISPLAY_DATE}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="52" y="29" width="117" height="20" uuid="7caf5e93-3bfd-4396-abbf-b4bb56785b0b"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMPLOYEE_NAME}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="52" y="111" width="477" height="58" uuid="d32e6912-5899-424d-81ff-ccda7b527309"/>
+				<textElement>
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{SUB}]]></textFieldExpression>
+			</textField>
+			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
+				<reportElement positionType="Float" x="52" y="70" width="477" height="20" uuid="2257ab84-9cd6-4858-805f-72dcfb49b838"/>
+				<textElement markup="html">
+					<font isBold="false"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMP_NAME}+","]]></textFieldExpression>
+			</textField>
+			<staticText>
+				<reportElement positionType="Float" x="52" y="265" width="171" height="20" uuid="2850af30-ebed-4570-ac75-ec22aea65e8e"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Authorized Signatory]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="52" y="50" width="100" height="20" isRemoveLineWhenBlank="true" uuid="e686f192-defe-487e-966a-7cb018f0ad8c"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{EMPLOYEE_ID}]]></textFieldExpression>
+			</textField>
+			<image>
+				<reportElement x="52" y="225" width="100" height="20" uuid="345dc03f-2f89-462a-9358-12ca495d3282"/>
+			</image>
+			<staticText>
+				<reportElement x="51" y="169" width="478" height="20" uuid="ac57778b-89c9-474f-9e46-4d9ce2032d1c"/>
+				<text><![CDATA[All other terms and conditions of the Contract employmet agreement remain the same.]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="51" y="90" width="148" height="20" uuid="6818a448-d46d-4960-8bd1-878ae12d2fc1"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<text><![CDATA[Subject : Contract Extension]]></text>
+			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement x="52" y="245" width="171" height="20" uuid="3715a14b-990e-44cc-b5bd-22d3e7ca9e29"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{REGION_HEAD}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="52" y="205" width="196" height="20" uuid="ea12b023-e124-4b6d-b860-7c0ea69acd77"/>
+				<textElement>
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["For"+$F{COMPANY_NAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</summary>
+</jasperReport>
